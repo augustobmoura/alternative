@@ -1,0 +1,23 @@
+version: '3'
+services:
+  server:
+    image: "postgrest/postgrest"
+    ports:
+      - "3000:3000"
+    links:
+      - db:db
+    environment:
+      PGRST_DB_URI: postgres://postgres:${DB_SUPER_PASSWORD}@db:5432/alternative
+      PGRST_DB_SCHEMA: api
+      PGRST_DB_ANON_ROLE: web_anon
+    depends_on:
+      - db
+  db:
+    build: .
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: alternative
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "${DB_SUPER_PASSWORD}"
+      AUTHENTICATOR_PASSWORD: '${AUTHENTICATOR_PASSWORD}'
